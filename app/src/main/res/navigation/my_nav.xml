@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/gamesFragment">
+
+    <fragment
+        android:id="@+id/gamesFragment"
+        android:name="com.example.tennisteamtracker.GamesFragment"
+        android:label="@string/games_fragment"
+        tools:layout="@layout/fragment_games" />
+    <fragment
+        android:id="@+id/rosterFragment"
+        android:name="com.example.tennisteamtracker.RosterFragment"
+        android:label="@string/roster_fragment"
+        tools:layout="@layout/fragment_roster" />
+    <fragment
+        android:id="@+id/statsFragment"
+        android:name="com.example.tennisteamtracker.StatsFragment"
+        android:label="@string/stats_fragment"
+        tools:layout="@layout/fragment_stats" />
+</navigation>

@@ -27,5 +27,11 @@
     <fragment
         android:id="@+id/addNewPlayerFragment"
         android:name="com.example.tennisteamtracker.addnewplayer.AddNewPlayerFragment"
-        android:label="AddNewPlayerFragment" />
+        android:label="AddNewPlayerFragment" >
+        <action
+            android:id="@+id/action_addNewPlayerFragment_to_rosterFragment"
+            app:destination="@id/rosterFragment"
+            app:popUpTo="@id/rosterFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

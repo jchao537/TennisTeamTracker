@@ -1,60 +1,74 @@
 package com.example.tennisteamtracker.addnewplayer
 
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.tennisteamtracker.R
+import com.example.tennisteamtracker.database.EntityDatabase
+import com.example.tennisteamtracker.database.Player
+import com.example.tennisteamtracker.databinding.FragmentAddNewPlayerBinding
+import com.example.tennisteamtracker.hideSoftKeyboard
+import kotlinx.android.synthetic.main.fragment_add_new_player.*
+import timber.log.Timber
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddNewPlayerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddNewPlayerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_new_player, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Get a reference to the binding object and inflate the fragment views.
+        val binding: FragmentAddNewPlayerBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_add_new_player, container, false)
+        val application = requireNotNull(this.activity).application
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddNewPlayerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddNewPlayerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        // Create an instance of the ViewModel Factory.
+        val dataSource = EntityDatabase.getInstance(application).playerDatabaseDao
+        val viewModelFactory = AddNewPlayerViewModelFactory(dataSource, application)
+
+        // Get a reference to the ViewModel associated with this fragment.
+        val addNewPlayerViewModel = ViewModelProvider(this, viewModelFactory).get(
+            AddNewPlayerViewModel::class.java)
+
+        binding.setLifecycleOwner(this)
+        binding.addNewPlayerViewModel = addNewPlayerViewModel
+
+        addNewPlayerViewModel.navigateToRoster.observe(viewLifecycleOwner,
+            Observer<Boolean> { navigate ->
+                if(navigate) {
+                    Timber.i("Save clicked!")
+                    if (TextUtils.isEmpty(edit_name.text)) {
+                        Toast.makeText(activity,"Please enter name",Toast.LENGTH_SHORT).show()
+                        Timber.i("Need Name!")
+                    } else if (TextUtils.isEmpty(edit_year.text)){
+                        Toast.makeText(activity,"Please enter year",Toast.LENGTH_SHORT).show()
+                        Timber.i("Need Year!")
+                    } else if (TextUtils.isEmpty(edit_rank.text)){
+                        Toast.makeText(activity,"Please enter rank",Toast.LENGTH_SHORT).show()
+                        Timber.i("Need Rank!")
+                    } else {
+                        val newPlayer = Player(
+                            playerName = edit_name.text.toString(),
+                            playerAge = edit_year.text.toString().toInt(),
+                            playerRank = edit_rank.text.toString().toInt()
+                        )
+                        addNewPlayerViewModel.saveNewPlayer(newPlayer)
+                        Timber.i("New Player Added 2")
+                        findNavController().navigate(R.id.action_addNewPlayerFragment_to_rosterFragment)
+                        addNewPlayerViewModel.onNavigatedToRoster()
+                        hideSoftKeyboard(requireActivity())
+                    }
                 }
-            }
+            })
+        return binding.root
     }
 }

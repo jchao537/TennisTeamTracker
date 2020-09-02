@@ -12,12 +12,20 @@
         tools:layout="@layout/fragment_games" />
     <fragment
         android:id="@+id/rosterFragment"
-        android:name="com.example.tennisteamtracker.RosterFragment"
+        android:name="com.example.tennisteamtracker.roster.RosterFragment"
         android:label="@string/roster_fragment"
-        tools:layout="@layout/fragment_roster" />
+        tools:layout="@layout/fragment_roster" >
+        <action
+            android:id="@+id/action_rosterFragment_to_addNewPlayerFragment"
+            app:destination="@id/addNewPlayerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/statsFragment"
         android:name="com.example.tennisteamtracker.StatsFragment"
         android:label="@string/stats_fragment"
         tools:layout="@layout/fragment_stats" />
+    <fragment
+        android:id="@+id/addNewPlayerFragment"
+        android:name="com.example.tennisteamtracker.addnewplayer.AddNewPlayerFragment"
+        android:label="AddNewPlayerFragment" />
 </navigation>

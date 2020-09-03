@@ -7,9 +7,13 @@
 
     <fragment
         android:id="@+id/gamesFragment"
-        android:name="com.example.tennisteamtracker.GamesFragment"
+        android:name="com.example.tennisteamtracker.games.GamesFragment"
         android:label="@string/games_fragment"
-        tools:layout="@layout/fragment_games" />
+        tools:layout="@layout/fragment_games" >
+        <action
+            android:id="@+id/action_gamesFragment_to_addGameDayFragment"
+            app:destination="@id/addGameDayFragment" />
+    </fragment>
     <fragment
         android:id="@+id/rosterFragment"
         android:name="com.example.tennisteamtracker.roster.RosterFragment"
@@ -32,6 +36,17 @@
             android:id="@+id/action_addNewPlayerFragment_to_rosterFragment"
             app:destination="@id/rosterFragment"
             app:popUpTo="@id/rosterFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/addGameDayFragment"
+        android:name="com.example.tennisteamtracker.addgameday.AddGameDayFragment"
+        android:label="fragment_add_game_day"
+        tools:layout="@layout/fragment_add_game_day" >
+        <action
+            android:id="@+id/action_addGameDayFragment_to_gamesFragment"
+            app:destination="@id/gamesFragment"
+            app:popUpTo="@id/gamesFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

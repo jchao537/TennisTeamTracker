@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">TennisTeamTracker</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="games_fragment">Games</string>
     <string name="roster_fragment">Roster</string>
     <string name="stats_fragment">Stats</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name= "score_separator"> - </string>
 </resources>

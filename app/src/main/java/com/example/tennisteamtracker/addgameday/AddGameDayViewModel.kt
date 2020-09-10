@@ -3,7 +3,6 @@ package com.example.tennisteamtracker.addgameday
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.tennisteamtracker.database.*
-import com.example.tennisteamtracker.formatGameDays
 import com.example.tennisteamtracker.formatPlayers
 import kotlinx.coroutines.*
 import timber.log.Timber

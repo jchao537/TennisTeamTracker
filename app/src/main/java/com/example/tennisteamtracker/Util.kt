@@ -17,6 +17,7 @@ fun formatPlayers(players: List<Player>, resources: Resources): Spanned {
         append("ALL PLAYERS")
         players.forEach {
             append("<br>")
+            append("<br>")
             append("Player: " + it.playerName + " Year: " + it.playerAge + " Rank: " + it.playerRank)
         }
     }
@@ -32,6 +33,7 @@ fun formatGameDays(gameDays: List<GameDay>, resources: Resources): Spanned {
     sb.apply {
         append("ALL GAMEDAYS")
         gameDays.forEach {
+            append("<br>")
             append("<br>")
             append("Opponent: " + it.opponentTeam + " Result: ")
             if (it.isATeamWin == true) { append("W") }

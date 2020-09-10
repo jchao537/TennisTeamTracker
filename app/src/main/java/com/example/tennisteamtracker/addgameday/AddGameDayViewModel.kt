@@ -2,15 +2,13 @@ package com.example.tennisteamtracker.addgameday
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.tennisteamtracker.database.Game
-import com.example.tennisteamtracker.database.GameDayDatabaseDao
-import com.example.tennisteamtracker.database.Player
-import com.example.tennisteamtracker.database.PlayerDatabaseDao
+import com.example.tennisteamtracker.database.*
+import com.example.tennisteamtracker.formatGameDays
 import com.example.tennisteamtracker.formatPlayers
 import kotlinx.coroutines.*
 import timber.log.Timber
 
-class AddGameDayViewModel(val database: GameDayDatabaseDao, val playerDatabase: PlayerDatabaseDao, application: Application) : AndroidViewModel(application) {
+class AddGameDayViewModel(val database: GameDayDatabaseDao, val playerDatabase: PlayerDatabaseDao, val gameDatabase: GameDatabaseDao, application: Application) : AndroidViewModel(application) {
     //private val players = playerDatabase.getPlayerList()
     private val spinnerPlayerNamesData = MutableLiveData<List<String>>()
 
@@ -50,5 +48,31 @@ class AddGameDayViewModel(val database: GameDayDatabaseDao, val playerDatabase: 
             Timber.i(name)
         }*/
         return playerNames
+    }
+
+    fun saveNewGame(game: Game) {
+        viewModelScope.launch{
+            insertGame(game)
+            Timber.i("New Game Added")
+        }
+    }
+
+    private suspend fun insertGame(game: Game) {
+        withContext(Dispatchers.IO) {
+            gameDatabase.insertGame(game)
+        }
+    }
+
+    fun saveNewGameDay(gameday: GameDay) {
+        viewModelScope.launch{
+            insertGameDay(gameday)
+            Timber.i("New Game Day Added")
+        }
+    }
+
+    private suspend fun insertGameDay(gameday: GameDay) {
+        withContext(Dispatchers.IO) {
+            database.insertGameDay(gameday)
+        }
     }
 }

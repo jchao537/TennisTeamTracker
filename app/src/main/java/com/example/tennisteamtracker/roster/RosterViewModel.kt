@@ -12,7 +12,7 @@ import timber.log.Timber
 
 class RosterViewModel(val database: PlayerDatabaseDao, application: Application) : AndroidViewModel(application) {
     private val players = database.getAllPlayersAsLiveData()
-    val nightsString = Transformations.map(players) { players ->
+    val playersString = Transformations.map(players) { players ->
         formatPlayers(players, application.resources)
     }
 

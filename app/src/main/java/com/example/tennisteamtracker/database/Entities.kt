@@ -27,7 +27,6 @@ data class Game(
     @PrimaryKey(autoGenerate = true) val gameId: Long = 0L,
     val gamePlayerId: Long = 0L,
     val partOfGameDayId: Long = 0L,
-    val opponentName: String = "",
     val ownScore: Int = 0,
     val opponentScore: Int = 0,
     val isAWin: Boolean? = null

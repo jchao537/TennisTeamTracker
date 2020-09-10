@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.room.Query
 import com.example.tennisteamtracker.R
 import com.example.tennisteamtracker.addnewplayer.AddNewPlayerViewModel
 import com.example.tennisteamtracker.addnewplayer.AddNewPlayerViewModelFactory
@@ -108,6 +109,7 @@ class AddGameDayFragment : Fragment() {
                             gameDayWin = true
                         }
 
+                        //Create a new GameDay and save it into the Room
                         val newGameDay = GameDay(
                             opponentTeam = opponent_name_val.text.toString(),
                             teamWins = numWins,
@@ -115,6 +117,21 @@ class AddGameDayFragment : Fragment() {
                             isATeamWin = gameDayWin
                         )
                         addGameDayViewModel.saveNewGameDay(newGameDay)
+                        /*
+                        val gameDayId = addGameDayViewModel.getLastGameDayId()
+
+                        //Create and Add a New Game
+                        var playId = addGameDayViewModel.getSpecificPlayerId(binding.firstGameSpinner.selectedItem.toString())
+                        val newGame = Game(
+                            gamePlayerId = playId,
+                            partOfGameDayId = gameDayId,
+                            ownScore = Integer.parseInt(own_score_1.text.toString()),
+                            opponentScore = Integer.parseInt(opponent_score_1.text.toString()),
+                            isAWin = Integer.parseInt(own_score_1.text.toString()) > Integer.parseInt(opponent_score_1.text.toString())
+                        )
+                        addGameDayViewModel.saveNewGame(newGame)*/
+
+                        //Navigate back to the Game Fragment
                         val navController = findNavController()
                         navController.navigate(R.id.action_addGameDayFragment_to_gamesFragment)
                         addGameDayViewModel.onNavigatedToGames()

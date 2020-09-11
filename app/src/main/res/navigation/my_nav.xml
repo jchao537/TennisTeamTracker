@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/addNewPlayerFragment"
         android:name="com.example.tennisteamtracker.addnewplayer.AddNewPlayerFragment"
-        android:label="AddNewPlayerFragment" >
+        android:label="Add New Player" >
         <action
             android:id="@+id/action_addNewPlayerFragment_to_rosterFragment"
             app:destination="@id/rosterFragment"
@@ -41,10 +41,21 @@
     <fragment
         android:id="@+id/addGameDayFragment"
         android:name="com.example.tennisteamtracker.addgameday.AddGameDayFragment"
-        android:label="fragment_add_game_day"
+        android:label="Add New GameDay"
         tools:layout="@layout/fragment_add_game_day" >
         <action
-            android:id="@+id/action_addGameDayFragment_to_gamesFragment"
+            android:id="@+id/action_addGameDayFragment_to_addGamesFragment"
+            app:destination="@id/addGamesFragment"
+            app:popUpTo="@id/gamesFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/addGamesFragment"
+        android:name="com.example.tennisteamtracker.addgames.AddGamesFragment"
+        android:label="Add Games"
+        tools:layout="@layout/fragment_add_games" >
+        <action
+            android:id="@+id/action_addGamesFragment_to_gamesFragment"
             app:destination="@id/gamesFragment"
             app:popUpTo="@id/gamesFragment"
             app:popUpToInclusive="true" />

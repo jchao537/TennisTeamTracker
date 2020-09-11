@@ -25,6 +25,7 @@ import com.example.tennisteamtracker.hideSoftKeyboard
 import kotlinx.android.synthetic.main.fragment_add_game_day.*
 import kotlinx.android.synthetic.main.fragment_add_new_player.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -50,73 +51,36 @@ class AddGameDayFragment : Fragment() {
         val addGameDayViewModel = ViewModelProvider(this, viewModelFactory).get(
             AddGameDayViewModel::class.java)
 
-        var listOfSpinners = listOf<Spinner>(binding.firstGameSpinner, binding.secondGameSpinner, binding.thirdGameSpinner)
-        var listOfEditTexts = listOf<EditText>(binding.opponentScore1, binding.opponentScore2, binding.ownScore1,
-                                                binding.ownScore2, binding.opponentScore3, binding.ownScore3)
-
         binding.setLifecycleOwner(this)
         binding.addGameDayViewModel = addGameDayViewModel
 
-        addGameDayViewModel.fetchSpinnerPlayerNames().observe(this.requireActivity(), Observer { spinnerData ->
-            val spinnerAdapter = ArrayAdapter<String>(this.requireActivity(), android.R.layout.simple_spinner_item, spinnerData)
-            for (spinner in listOfSpinners) {
-                spinner.adapter = spinnerAdapter
-            }
-        })
-
-        for (spinner in listOfSpinners){
-            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Toast.makeText(activity, "Nothing Selected", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-                    Toast.makeText(activity, "You selected ${parent?.getItemAtPosition(pos).toString()}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        addGameDayViewModel.navigateToGameDays.observe(viewLifecycleOwner,
+        addGameDayViewModel.navigateToNewGames.observe(viewLifecycleOwner,
             Observer<Boolean> { navigate ->
                 if(navigate) {
-                    Timber.i("Save clicked!")
-                    var allValuesValid = true
+                    Timber.i("New Games clicked!")
                     if (TextUtils.isEmpty(opponent_name_val.text)) {
                         Toast.makeText(activity, "Please enter opponent name", Toast.LENGTH_SHORT).show()
                         Timber.i("Need Opponent Name!")
-                        allValuesValid = false
                     }
-                    for (editText in listOfEditTexts) {
-                        if (TextUtils.isEmpty(editText.text)) {
-                            Toast.makeText(activity, "Please enter all scores", Toast.LENGTH_SHORT).show()
-                            Timber.i("Need All Scores!")
-                            allValuesValid = false
-                        }
-                    }
-                    if (allValuesValid) {
-                        var numWins = 0
-                        var gameDayWin = false
-                        if (Integer.parseInt(own_score_1.text.toString()) > Integer.parseInt(opponent_score_1.text.toString())){
-                            numWins++
-                        }
-                        if (Integer.parseInt(own_score_2.text.toString()) > Integer.parseInt(opponent_score_2.text.toString())){
-                            numWins++
-                        }
-                        if (Integer.parseInt(own_score_3.text.toString()) > Integer.parseInt(opponent_score_3.text.toString())){
-                            numWins++
-                        }
-                        if (numWins > (3 - numWins)){
-                            gameDayWin = true
-                        }
-
+                    else {
                         //Create a new GameDay and save it into the Room
                         val newGameDay = GameDay(
-                            opponentTeam = opponent_name_val.text.toString(),
-                            teamWins = numWins,
-                            teamLosses = 3 - numWins,
-                            isATeamWin = gameDayWin
+                            opponentTeam = opponent_name_val.text.toString()
                         )
                         addGameDayViewModel.saveNewGameDay(newGameDay)
+
+                        /*
+                        //TESTING
+                        Timber.i(binding.firstGameSpinner.selectedItem.toString())
+                        var testPlayer = addGameDayViewModel.getPlayerWithLastName(binding.firstGameSpinner.selectedItem.toString())
+                        Timber.i("Game 1: ${testPlayer.playerName} at rank ${testPlayer.playerRank}: ${binding.ownScore1.text}-${binding.opponentScore1.text}")
+                        Timber.i("Game 2: ${binding.secondGameSpinner.selectedItem.toString()}: ${binding.ownScore2.text}-${binding.opponentScore2.text}")
+                        Timber.i("Game 3: ${binding.thirdGameSpinner.selectedItem.toString()}: ${binding.ownScore3.text}-${binding.opponentScore3.text}")
+                        var lastGD = addGameDayViewModel.fetchLastGameDay()
+                        if (lastGD != null) {
+                            Timber.i("GameDay: ${lastGD.opponentTeam}")
+                        }*/
+
                         /*
                         val gameDayId = addGameDayViewModel.getLastGameDayId()
 
@@ -133,9 +97,9 @@ class AddGameDayFragment : Fragment() {
 
                         //Navigate back to the Game Fragment
                         val navController = findNavController()
-                        navController.navigate(R.id.action_addGameDayFragment_to_gamesFragment)
+                        navController.navigate(R.id.action_addGameDayFragment_to_addGamesFragment)
                         addGameDayViewModel.onNavigatedToGames()
-                        Timber.i("Moved to Games")
+                        Timber.i("Moved to New Games")
                     }
                 }
             })

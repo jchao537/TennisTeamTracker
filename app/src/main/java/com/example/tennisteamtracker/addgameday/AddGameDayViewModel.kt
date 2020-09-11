@@ -10,50 +10,22 @@ import timber.log.Timber
 class AddGameDayViewModel(val database: GameDayDatabaseDao, val playerDatabase: PlayerDatabaseDao, val gameDatabase: GameDatabaseDao, application: Application) : AndroidViewModel(application) {
     //private val players = playerDatabase.getPlayerList()
     private val spinnerPlayerNamesData = MutableLiveData<List<String>>()
+    private var player = Player()
+    private var gameday = MutableLiveData<GameDay?>()
 
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private val _navigateToGameDays = MutableLiveData<Boolean>()
-    val navigateToGameDays: LiveData<Boolean>
-        get() = _navigateToGameDays
+    private val _navigateToNewGames = MutableLiveData<Boolean>()
+    val navigateToNewGames: LiveData<Boolean>
+        get() = _navigateToNewGames
 
     fun onSaveClicked() {
-        _navigateToGameDays.value = true
+        _navigateToNewGames.value = true
     }
 
     fun onNavigatedToGames() {
-        _navigateToGameDays.value = false
-    }
-
-    fun fetchSpinnerPlayerNames(): LiveData<List<String>> {
-        //fetch data
-        uiScope.launch {
-            spinnerPlayerNamesData.value = getPlayersName()
-        }
-        return spinnerPlayerNamesData
-    }
-
-    private suspend fun getPlayersName() : MutableList<String> {
-        val playerNames = mutableListOf<String>()
-        withContext(Dispatchers.IO) {
-            val players = playerDatabase.getPlayerList()
-            for (player in players){
-                playerNames.add(player.playerName)
-            }
-        }
-        Timber.i("There are ${playerNames.size} players")
-        /*for (name in playerNames){
-            Timber.i(name)
-        }*/
-        return playerNames
-    }
-
-    fun saveNewGame(game: Game) {
-        viewModelScope.launch{
-            insertGame(game)
-            Timber.i("New Game Added")
-        }
+        _navigateToNewGames.value = false
     }
 
     private suspend fun insertGame(game: Game) {
@@ -72,6 +44,25 @@ class AddGameDayViewModel(val database: GameDayDatabaseDao, val playerDatabase: 
     private suspend fun insertGameDay(gameday: GameDay) {
         withContext(Dispatchers.IO) {
             database.insertGameDay(gameday)
+            Timber.i("inserted gameday against ${gameday.opponentTeam}")
         }
+    }
+
+    fun fetchLastGameDay(): GameDay? {
+        viewModelScope.launch{
+            gameday.value = getLastGD()
+        }
+        return gameday.value
+    }
+
+    private suspend fun getLastGD(): GameDay? {
+        withContext(Dispatchers.IO) {
+            Timber.i("There are ${database.getGameDayList().size} gamedays")
+        }
+        var gd = database.getLastGameDay()
+        if (gd != null) {
+            Timber.i("Last gameday was against ${gd.opponentTeam} which had ${gd.teamWins} team wins")
+        }
+        return gd
     }
 }

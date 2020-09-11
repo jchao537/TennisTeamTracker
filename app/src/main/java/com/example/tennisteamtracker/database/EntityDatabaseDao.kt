@@ -36,6 +36,9 @@ interface PlayerDatabaseDao {
 
     @Query("DELETE FROM Player")
     suspend fun clearAllPlayers()
+
+    @Query("SELECT * FROM Player WHERE playerName = :name")
+    suspend fun getPlayerWithLastName(name: String): Player
 }
 
 @Dao
